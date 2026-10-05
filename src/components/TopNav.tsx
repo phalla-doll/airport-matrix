@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { AppMode } from '../types';
 import { sound } from '../utils/soundEngine';
 import { SlidersHorizontal, Plus, Maximize2, Minimize2 } from 'lucide-react';
@@ -92,8 +93,10 @@ export const TopNav: React.FC<TopNavProps> = ({
             >
               {mode.label}
               {isActive && (
-                <span
-                  className={`absolute inset-0 rounded-full -z-10 shadow-sm transition-all duration-200 ${
+                <motion.span
+                  layoutId="active-nav-pill"
+                  transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                  className={`absolute inset-0 rounded-full -z-10 shadow-sm ${
                     isLight ? 'bg-white' : 'bg-neutral-700/80 border border-neutral-600/50'
                   }`}
                 />
@@ -135,3 +138,4 @@ export const TopNav: React.FC<TopNavProps> = ({
     </header>
   );
 };
+

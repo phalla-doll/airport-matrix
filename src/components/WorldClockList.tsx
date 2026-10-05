@@ -38,18 +38,39 @@ export const WorldClockList: React.FC<WorldClockListProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
-      {/* Airport Board Table Header */}
-      <div className="flex items-center justify-between pb-3 px-3 sm:px-6 border-b border-neutral-800 text-[10px] sm:text-xs font-mono tracking-widest text-neutral-500 uppercase">
-        <div className="flex-1 min-w-[120px] sm:min-w-[180px]">CITY / DESTINATION</div>
-        <div className="w-20 hidden md:block text-center">AIRPORT</div>
-        <div className="w-32 sm:w-44 text-right pr-2">LOCAL TIME</div>
-        <div className="w-16 sm:w-20 text-center">DIFF</div>
-        <div className="w-20 sm:w-24 text-right hidden sm:block">STATUS</div>
-        <div className="w-14 sm:w-16 text-right">ACTIONS</div>
-      </div>
+      {/* Airport Departure Display Frame */}
+      <div
+        className={`rounded-2xl border overflow-hidden shadow-2xl transition-colors ${
+          isLight
+            ? 'bg-neutral-50 border-neutral-300 shadow-xl'
+            : 'bg-neutral-950 border-neutral-800 shadow-2xl shadow-black/80'
+        }`}
+      >
+        {/* Terminal FIDS Top Header Strip */}
+        <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 bg-neutral-900/60 border-b border-neutral-800/80 text-[10px] font-mono tracking-widest text-neutral-400">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="uppercase">FLIGHT INFORMATION DISPLAY SYSTEM</span>
+          </div>
+          <div className="flex items-center gap-3 text-neutral-500">
+            <span>HOME: {homeCity.airportCode}</span>
+            <span>·</span>
+            <span>{cities.length} ACTIVE PORTS</span>
+          </div>
+        </div>
 
-      {/* City Rows */}
-      <div className="divide-y divide-neutral-800/80">
+        {/* Airport Board Table Header */}
+        <div className="flex items-center justify-between py-2.5 px-3 sm:px-6 border-b border-neutral-800 bg-neutral-900/30 text-[10px] sm:text-xs font-mono tracking-widest text-neutral-500 uppercase">
+          <div className="flex-1 min-w-[120px] sm:min-w-[180px]">CITY / DESTINATION</div>
+          <div className="w-20 hidden md:block text-center">AIRPORT</div>
+          <div className="w-32 sm:w-44 text-right pr-2">LOCAL TIME</div>
+          <div className="w-16 sm:w-20 text-center">DIFF</div>
+          <div className="w-20 sm:w-24 text-right hidden sm:block">STATUS</div>
+          <div className="w-14 sm:w-16 text-right">ACTIONS</div>
+        </div>
+
+        {/* City Rows */}
+        <div className="divide-y divide-neutral-800/80">
         {cities.map((city, index) => {
           const timeInfo = getTimeInfo(city.timezone, settings.is24Hour);
           const diffString = getTimeDifference(city.timezone, homeCity.timezone);
@@ -216,6 +237,7 @@ export const WorldClockList: React.FC<WorldClockListProps> = ({
             </div>
           );
         })}
+        </div>
       </div>
 
       {/* Add City Trigger Bottom Button */}

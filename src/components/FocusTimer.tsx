@@ -153,21 +153,28 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({ settings, homeCity }) =>
           </div>
 
           {/* Progress bar resembling runway strip */}
-          <div className="w-full mt-6 bg-neutral-900 h-2 rounded-full overflow-hidden border border-neutral-800">
+          <div className="relative w-full mt-6 bg-neutral-900 h-3 rounded-full overflow-hidden border border-neutral-800 flex items-center">
             <div
-              className="h-full bg-gradient-to-r from-neutral-600 via-neutral-400 to-white transition-all duration-500"
+              className="h-full bg-gradient-to-r from-neutral-600 via-neutral-300 to-white transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
+            {/* Plane marker riding the runway */}
+            <div
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 text-amber-400 transition-all duration-500 pointer-events-none"
+              style={{ left: `${Math.max(4, Math.min(96, progress))}%` }}
+            >
+              <Plane size={14} className="rotate-45" />
+            </div>
           </div>
           <div className="flex justify-between w-full mt-1.5 text-[9px] font-mono text-neutral-500">
-            <span>TAKEOFF</span>
+            <span>TAKEOFF ({homeCity.airportCode})</span>
             <span>{Math.round(progress)}% EN ROUTE</span>
             <span>TOUCHDOWN</span>
           </div>
         </div>
 
         {/* Preset Selector */}
-        <div className="grid grid-cols-4 gap-2 mb-6">
+        <div className="grid grid-cols-4 gap-2 mb-4">
           {PRESETS.map((p, idx) => (
             <button
               key={p.label}
@@ -184,6 +191,35 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({ settings, homeCity }) =>
               <div className="text-[9px] truncate">{p.label}</div>
             </button>
           ))}
+        </div>
+
+        {/* Fine-tune duration +5m / -5m buttons */}
+        <div className="flex items-center justify-center gap-3 mb-6 text-xs font-mono text-neutral-400">
+          <button
+            onClick={() => {
+              sound.playDroplet();
+              const newSecs = Math.max(60, remainingSeconds - 300);
+              setTotalSeconds(newSecs);
+              setRemainingSeconds(newSecs);
+            }}
+            disabled={isActive}
+            className="px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 hover:bg-neutral-800 disabled:opacity-40 cursor-pointer"
+          >
+            -5 MIN
+          </button>
+          <span className="text-[10px] text-neutral-500">ADJUST GATE TIME</span>
+          <button
+            onClick={() => {
+              sound.playDroplet();
+              const newSecs = remainingSeconds + 300;
+              setTotalSeconds(newSecs);
+              setRemainingSeconds(newSecs);
+            }}
+            disabled={isActive}
+            className="px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 hover:bg-neutral-800 disabled:opacity-40 cursor-pointer"
+          >
+            +5 MIN
+          </button>
         </div>
 
         {/* Actions Controls */}

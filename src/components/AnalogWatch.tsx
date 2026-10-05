@@ -19,23 +19,34 @@ export const AnalogWatch: React.FC<AnalogWatchProps> = ({
   onUpdateSettings,
 }) => {
   const [selectedCityIndex, setSelectedCityIndex] = useState(0);
+  const [movementStyle, setMovementStyle] = useState<'sweep' | 'quartz'>('sweep');
   const [now, setNow] = useState(new Date());
 
   const currentCity = cities[selectedCityIndex] || homeCity;
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(new Date());
-    }, 100); // 10fps for smooth clock updates
-    return () => clearInterval(timer);
-  }, []);
+    let animId: number;
+    if (movementStyle === 'sweep') {
+      const update = () => {
+        setNow(new Date());
+        animId = requestAnimationFrame(update);
+      };
+      animId = requestAnimationFrame(update);
+      return () => cancelAnimationFrame(animId);
+    } else {
+      const timer = setInterval(() => {
+        setNow(new Date());
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [movementStyle]);
 
   // Compute angles for the current city
   const cityDate = new Date(now.toLocaleString('en-US', { timeZone: currentCity.timezone }));
   const hours = cityDate.getHours();
   const minutes = cityDate.getMinutes();
   const seconds = cityDate.getSeconds();
-  const millis = cityDate.getMilliseconds();
+  const millis = movementStyle === 'sweep' ? cityDate.getMilliseconds() : 0;
 
   const secondFraction = seconds + millis / 1000;
   const secondAngle = secondFraction * 6; // 360 / 60
@@ -265,17 +276,20 @@ export const AnalogWatch: React.FC<AnalogWatchProps> = ({
               <div className="w-1.5 h-1.5 rounded-full bg-black" />
             </div>
           </div>
+
+          {/* Sapphire crystal anti-reflective glass glare */}
+          <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/[0.03] to-white/[0.08] mix-blend-screen z-20" />
         </div>
       </div>
 
       {/* Watch Mode Controls */}
-      <div className="flex items-center gap-4 mt-6">
+      <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
         <button
           onClick={toggleWatchTick}
           className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono transition-colors cursor-pointer ${
             settings.soundMode === 'watch'
               ? 'bg-neutral-800 text-neutral-100 border border-neutral-700'
-              : 'text-neutral-500 hover:text-neutral-300'
+              : 'bg-neutral-900/60 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
           }`}
           title="Toggle mechanical watch ticking sound"
         >
@@ -283,9 +297,21 @@ export const AnalogWatch: React.FC<AnalogWatchProps> = ({
           <span>TICKING: {settings.soundMode === 'watch' ? 'ON' : 'OFF'}</span>
         </button>
 
-        <div className="flex items-center gap-1 text-xs font-mono text-neutral-500">
+        <button
+          onClick={() => {
+            sound.playDroplet();
+            setMovementStyle((prev) => (prev === 'sweep' ? 'quartz' : 'sweep'));
+          }}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono bg-neutral-900/60 border border-neutral-800 text-neutral-400 hover:text-neutral-200 transition-colors cursor-pointer"
+          title="Toggle between fluid continuous sweep and discrete 1-second quartz step"
+        >
+          <span>HAND:</span>
+          <span className="font-bold text-neutral-200 uppercase">{movementStyle}</span>
+        </button>
+
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono bg-neutral-900/40 border border-neutral-800 text-neutral-500">
           <Compass size={14} />
-          <span>TIMEZONE: GMT{timeInfo.offsetHours >= 0 ? `+${timeInfo.offsetHours}` : timeInfo.offsetHours}</span>
+          <span>GMT{timeInfo.offsetHours >= 0 ? `+${timeInfo.offsetHours}` : timeInfo.offsetHours}</span>
         </div>
       </div>
     </div>

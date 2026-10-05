@@ -143,27 +143,50 @@ export const WorldMap: React.FC<WorldMapProps> = ({
               stroke={isLight ? '#D1D5DB' : '#262626'}
               strokeWidth="0.8"
             >
-              {/* North America */}
-              <path d="M 120,70 L 220,60 L 280,100 L 290,140 L 240,160 L 250,210 L 220,240 L 190,200 L 140,190 L 100,140 Z" />
+              {/* North America detailed */}
+              <path d="M 90,95 L 140,55 L 210,50 L 260,70 L 290,110 L 255,145 L 245,175 L 255,200 L 230,235 L 205,205 L 180,200 L 150,185 L 120,165 L 85,120 Z" />
+              {/* Central America bridge */}
+              <path d="M 230,235 L 245,250 L 260,265 L 250,270 L 235,255 L 225,240 Z" />
               {/* Greenland */}
-              <path d="M 330,40 L 380,45 L 360,90 L 310,75 Z" />
-              {/* South America */}
-              <path d="M 270,260 L 340,280 L 370,350 L 330,440 L 290,440 L 270,360 L 255,290 Z" />
-              {/* Europe */}
-              <path d="M 460,100 L 540,90 L 560,140 L 510,180 L 460,170 L 440,140 Z" />
-              {/* Africa */}
-              <path d="M 450,190 L 550,190 L 590,260 L 560,370 L 510,400 L 470,350 L 440,260 Z" />
-              {/* Asia */}
-              <path d="M 560,80 L 800,70 L 870,120 L 840,200 L 760,260 L 680,240 L 620,180 L 560,160 Z" />
+              <path d="M 330,35 L 390,40 L 375,85 L 325,75 Z" />
+              {/* South America detailed */}
+              <path d="M 265,265 L 335,280 L 375,340 L 340,435 L 305,455 L 290,440 L 275,360 L 255,290 Z" />
+              {/* Europe & Scandinavia */}
+              <path d="M 455,90 L 485,60 L 515,65 L 505,100 L 550,110 L 545,145 L 505,170 L 460,160 L 440,135 L 450,105 Z" />
+              {/* Africa detailed */}
+              <path d="M 445,180 L 545,180 L 585,255 L 565,365 L 520,405 L 480,360 L 445,270 L 435,210 Z" />
+              {/* Madagascar */}
+              <path d="M 590,325 L 605,335 L 595,370 L 585,360 Z" />
+              {/* Asia detailed */}
+              <path d="M 550,70 L 780,65 L 870,105 L 850,185 L 800,230 L 740,255 L 705,215 L 640,210 L 600,160 L 550,150 Z" />
+              {/* Indian subcontinent */}
+              <path d="M 680,190 L 725,210 L 705,260 L 675,225 Z" />
+              {/* Southeast Asia & Indonesia */}
+              <path d="M 740,235 L 775,245 L 760,285 L 735,260 Z" />
+              <path d="M 745,295 L 790,295 L 810,310 L 765,310 Z" />
               {/* Australia */}
-              <path d="M 780,330 L 870,330 L 890,390 L 850,430 L 780,410 L 760,360 Z" />
+              <path d="M 780,325 L 865,325 L 890,380 L 850,425 L 785,410 L 765,365 Z" />
               {/* Japan archipelago */}
-              <path d="M 850,160 L 870,180 L 860,210 L 845,190 Z" />
+              <path d="M 850,145 L 865,160 L 860,195 L 845,180 Z" />
               {/* UK & Ireland */}
-              <path d="M 450,115 L 465,110 L 460,135 L 445,130 Z" />
+              <path d="M 445,110 L 460,105 L 455,130 L 440,125 Z" />
               {/* New Zealand */}
-              <path d="M 910,400 L 930,420 L 920,445 L 905,420 Z" />
+              <path d="M 910,395 L 925,415 L 915,445 L 905,420 Z" />
             </g>
+
+            {/* Latitude parallels */}
+            {[100, 175, 250, 325, 400].map((y) => (
+              <line
+                key={y}
+                x1="0"
+                y1={y}
+                x2={mapWidth}
+                y2={y}
+                stroke={isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.05)'}
+                strokeWidth="0.8"
+                strokeDasharray="3 5"
+              />
+            ))}
 
             {/* Night-time Solar Terminator Shade */}
             <path
@@ -339,6 +362,14 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                     {getTimeInfo(selectedCity.timezone, settings.is24Hour).isDay ? 'DAY' : 'NIGHT'}
                   </span>
                 </div>
+              </div>
+
+              {/* Airport METAR Weather & Runway Telemetry */}
+              <div className="mt-2.5 pt-2 border-t border-neutral-800/60 flex items-center justify-between text-[10px] font-mono text-neutral-400">
+                <span>
+                  {Math.round(18 + Math.cos((selectedCity.lat * Math.PI) / 180) * 8 + (getTimeInfo(selectedCity.timezone, settings.is24Hour).isDay ? 3 : -3))}°C · METAR CLEAR
+                </span>
+                <span className="text-emerald-400">RUNWAY DRY</span>
               </div>
 
               {/* Set as Home button */}

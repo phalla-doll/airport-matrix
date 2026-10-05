@@ -112,12 +112,28 @@ export const CoffeeModal: React.FC<CoffeeModalProps> = ({ isOpen, onClose, isLig
           </button>
 
           {/* Boarding pass ticket punch simulation footer */}
-          <div className="mt-6 pt-4 border-t border-dashed border-neutral-800 flex items-center justify-between text-[10px] font-mono text-neutral-500">
-            <span className="flex items-center gap-1">
-              <Plane size={11} className="text-neutral-500" />
-              FLIGHT NO. COFFEE-01
-            </span>
-            <span>GATE OPEN // AIRPORT MATRIX</span>
+          <div className="mt-6 pt-4 border-t border-dashed border-neutral-800 flex flex-col gap-2">
+            <div className="flex items-center justify-between text-[10px] font-mono text-neutral-500">
+              <span className="flex items-center gap-1">
+                <Plane size={11} className="text-neutral-500" />
+                PASS NO. COFFEE-01
+              </span>
+              <span>PRIORITY BOARDING // MATRIX AIR</span>
+            </div>
+
+            {/* Simulated barcode */}
+            <div className="flex justify-center items-center gap-0.5 h-6 opacity-60 overflow-hidden mt-1">
+              {[2, 1, 3, 1, 2, 4, 1, 2, 1, 3, 2, 1, 4, 2, 1, 3, 1, 2, 3, 1, 2, 4, 1, 2, 1, 3].map((w, i) => (
+                <div
+                  key={i}
+                  className="h-full bg-neutral-400"
+                  style={{ width: `${w * 1.5}px` }}
+                />
+              ))}
+            </div>
+            <div className="text-[8px] font-mono text-neutral-600 tracking-widest text-center">
+              * 2026-FIDS-COFFEE-DEV-DECK *
+            </div>
           </div>
         </div>
       </div>

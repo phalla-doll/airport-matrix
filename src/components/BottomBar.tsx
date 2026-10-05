@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { ViewTab, CityTimezone, AppSettings } from '../types';
 import { getTimeInfo } from '../utils/cities';
 import { sound } from '../utils/soundEngine';
@@ -37,7 +38,7 @@ export const BottomBar: React.FC<BottomBarProps> = ({
     >
       {/* Clock / Map Toggle Pill */}
       <div
-        className={`flex items-center p-1 rounded-full border ${
+        className={`relative flex items-center p-1 rounded-full border ${
           isLight
             ? 'bg-neutral-200 border-neutral-300'
             : 'bg-neutral-900/80 border-neutral-800'
@@ -45,30 +46,48 @@ export const BottomBar: React.FC<BottomBarProps> = ({
       >
         <button
           onClick={() => handleTabChange('clock')}
-          className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold tracking-wider transition-colors cursor-pointer ${
+          className={`relative z-10 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold tracking-wider transition-colors cursor-pointer ${
             viewTab === 'clock'
               ? isLight
-                ? 'bg-white text-neutral-900 shadow-sm'
-                : 'bg-neutral-700/80 text-white shadow-sm'
+                ? 'text-neutral-900'
+                : 'text-white'
               : 'text-neutral-500 hover:text-neutral-300'
           }`}
         >
           <Clock size={13} />
           <span>CLOCK</span>
+          {viewTab === 'clock' && (
+            <motion.span
+              layoutId="bottom-tab-pill"
+              transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+              className={`absolute inset-0 rounded-full -z-10 shadow-sm ${
+                isLight ? 'bg-white' : 'bg-neutral-700/80 border border-neutral-600/50'
+              }`}
+            />
+          )}
         </button>
 
         <button
           onClick={() => handleTabChange('map')}
-          className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold tracking-wider transition-colors cursor-pointer ${
+          className={`relative z-10 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold tracking-wider transition-colors cursor-pointer ${
             viewTab === 'map'
               ? isLight
-                ? 'bg-white text-neutral-900 shadow-sm'
-                : 'bg-neutral-700/80 text-white shadow-sm'
+                ? 'text-neutral-900'
+                : 'text-white'
               : 'text-neutral-500 hover:text-neutral-300'
           }`}
         >
           <Map size={13} />
           <span>MAP</span>
+          {viewTab === 'map' && (
+            <motion.span
+              layoutId="bottom-tab-pill"
+              transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+              className={`absolute inset-0 rounded-full -z-10 shadow-sm ${
+                isLight ? 'bg-white' : 'bg-neutral-700/80 border border-neutral-600/50'
+              }`}
+            />
+          )}
         </button>
       </div>
 

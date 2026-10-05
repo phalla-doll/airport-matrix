@@ -46,26 +46,40 @@ class SoundEngine {
 
     try {
       const now = this.ctx.currentTime;
+      // Main bubble sweep
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
 
-      // Pitch sweep mimicking a water droplet drop & surface bubble
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(600, now);
-      osc.frequency.exponentialRampToValueAtTime(1750, now + 0.075);
-      osc.frequency.exponentialRampToValueAtTime(1400, now + 0.12);
+      osc.frequency.setValueAtTime(520, now);
+      osc.frequency.exponentialRampToValueAtTime(1680, now + 0.055);
+      osc.frequency.exponentialRampToValueAtTime(1350, now + 0.095);
 
-      // Volume envelope
       const maxGain = 0.22 * this.volume;
       gain.gain.setValueAtTime(0.001, now);
-      gain.gain.linearRampToValueAtTime(maxGain, now + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+      gain.gain.linearRampToValueAtTime(maxGain, now + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.11);
+
+      // High bubble harmonic pop
+      const popOsc = this.ctx.createOscillator();
+      const popGain = this.ctx.createGain();
+      popOsc.type = 'sine';
+      popOsc.frequency.setValueAtTime(1400, now);
+      popOsc.frequency.exponentialRampToValueAtTime(2600, now + 0.035);
+
+      popGain.gain.setValueAtTime(0.001, now);
+      popGain.gain.linearRampToValueAtTime(maxGain * 0.45, now + 0.008);
+      popGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
 
       osc.connect(gain);
       gain.connect(this.ctx.destination);
+      popOsc.connect(popGain);
+      popGain.connect(this.ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.15);
+      osc.stop(now + 0.12);
+      popOsc.start(now);
+      popOsc.stop(now + 0.05);
     } catch {
       // AudioContext policy fallback
     }
