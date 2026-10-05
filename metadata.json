@@ -1,0 +1,6 @@
+{
+  "name": "Airport Matrix Time",
+  "description": "A tactile airport flight-information display (FIDS) world clock and multi-timezone app with Watch, Focus, and World Time modes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
