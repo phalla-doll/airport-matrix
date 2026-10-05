@@ -138,6 +138,17 @@ class SoundEngine {
     }
   }
 
+  // Cascading mechanical split-flap fluttering sequence
+  public playFlapFlutter(count = 6) {
+    if (this.soundMode === 'mute' || this.volume <= 0) return;
+    const actualCount = Math.min(8, Math.max(1, count));
+    for (let i = 0; i < actualCount; i++) {
+      window.setTimeout(() => {
+        this.playMatrixFlip();
+      }, i * 65);
+    }
+  }
+
   // Mechanical Watch escapement tick
   public playSingleWatchTick() {
     if (this.soundMode === 'mute' || this.volume <= 0) return;
