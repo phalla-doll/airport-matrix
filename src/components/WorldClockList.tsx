@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { CityTimezone, AppSettings } from '../types';
 import { DotMatrixText } from './DotMatrixText';
 import { getTimeInfo, getTimeDifference } from '../utils/cities';
+import { useCityTemperatures } from '../utils/weather';
 import { sound } from '../utils/soundEngine';
 import { Sun, Moon, Star, Trash2, ArrowUp, ArrowDown, Plus, RefreshCw } from 'lucide-react';
 
@@ -28,6 +29,9 @@ export const WorldClockList: React.FC<WorldClockListProps> = ({
   const [, setTick] = useState(0);
   const [flipIteration, setFlipIteration] = useState(0);
   const [isFlipping, setIsFlipping] = useState(false);
+
+  // Fetch / estimate live temperatures for all active cities
+  const temps = useCityTemperatures(cities);
 
   // Update clock every second
   useEffect(() => {
@@ -89,7 +93,7 @@ export const WorldClockList: React.FC<WorldClockListProps> = ({
         <div className="flex items-center justify-between py-2.5 px-3 sm:px-6 border-b border-neutral-800 bg-neutral-900/30 text-[10px] sm:text-xs font-mono tracking-widest text-neutral-500 uppercase">
           <div className="flex-1 min-w-[120px] sm:min-w-[180px]">CITY / DESTINATION</div>
           <div className="w-20 hidden md:block text-center">AIRPORT</div>
-          <div className="w-32 sm:w-44 text-right pr-2">LOCAL TIME</div>
+          <div className="w-40 sm:w-56 text-right pr-2">LOCAL TIME · TEMP</div>
           <div className="w-16 sm:w-20 text-center">DIFF</div>
           <div className="w-20 sm:w-24 text-right hidden sm:block">STATUS</div>
           <div className="w-14 sm:w-16 text-right">ACTIONS</div>
@@ -167,29 +171,43 @@ export const WorldClockList: React.FC<WorldClockListProps> = ({
                     </span>
                   </div>
 
-                  {/* Local Time Column */}
-                  <div className="w-32 sm:w-44 flex items-center justify-end gap-1.5 pr-2">
-                    <DotMatrixText
-                      text={timeInfo.timeString}
-                      dotColor={settings.dotColor}
-                      theme={settings.theme}
-                      displayStyle={settings.displayStyle}
-                      size="md"
-                    />
-                    {settings.showSeconds && (
+                  {/* Local Time & Temperature Column */}
+                  <div className="w-40 sm:w-56 flex items-center justify-end gap-1.5 sm:gap-2 pr-2">
+                    <div className="flex items-center gap-1">
                       <DotMatrixText
-                        text={timeInfo.secondsString}
+                        text={timeInfo.timeString}
                         dotColor={settings.dotColor}
                         theme={settings.theme}
                         displayStyle={settings.displayStyle}
-                        size="xs"
+                        size="md"
                       />
-                    )}
-                    {!settings.is24Hour && timeInfo.dayPeriod && (
-                      <span className="text-[10px] font-mono text-neutral-400 font-semibold ml-0.5">
-                        {timeInfo.dayPeriod}
-                      </span>
-                    )}
+                      {settings.showSeconds && (
+                        <DotMatrixText
+                          text={timeInfo.secondsString}
+                          dotColor={settings.dotColor}
+                          theme={settings.theme}
+                          displayStyle={settings.displayStyle}
+                          size="xs"
+                        />
+                      )}
+                      {!settings.is24Hour && timeInfo.dayPeriod && (
+                        <span className="text-[10px] font-mono text-neutral-400 font-semibold ml-0.5">
+                          {timeInfo.dayPeriod}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Small subtle temperature indicator (e.g., '22°C') */}
+                    <div
+                      className={`flex items-center px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-mono font-medium tracking-tight whitespace-nowrap transition-colors ${
+                        isLight
+                          ? 'bg-neutral-200/90 border border-neutral-300 text-neutral-700'
+                          : 'bg-neutral-900/90 border border-neutral-800 text-neutral-400 group-hover:text-neutral-200'
+                      }`}
+                      title={`Current temperature in ${city.city} (${city.timezone})`}
+                    >
+                      <span>{temps[city.id] !== undefined ? `${temps[city.id]}°C` : '--°C'}</span>
+                    </div>
                   </div>
 
                   {/* Time Difference Column */}
